@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Inter", system-ui, sans-serif;
+    --color-amber-50: #fffbeb;
+    --color-orange-50: #fff7ed;
+    --color-orange-100: #ffedd5;
+}
+
+body {
+    background-color: #111827;
+    /* Dark background outside viewport */
+    color: #1f2937;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+}
+
+/* Safe Area Utilities */
+.pt-safe {
+    padding-top: max(env(safe-area-inset-top), 44px);
+    /* Dynamic Island approx */
+}
+
+.pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 34px);
+    /* Home Indicator approx */
+}

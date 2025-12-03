@@ -1,0 +1,83 @@
+/* Simple CSS-based facial expressions */
+.face-container {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eye {
+    width: 24px;
+    height: 24px;
+    background: #1f2937;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+/* Focusing: Glasses look */
+.face-focusing .eye {
+    height: 8px;
+    width: 32px;
+    border-radius: 4px;
+    background: #3730a3;
+    /* Indigo-900 */
+}
+
+/* Completed: Happy eyes */
+.face-completed .eye {
+    height: 12px;
+    width: 24px;
+    border-radius: 50% 50% 0 0;
+    /* Arch */
+    transform: scale(1.2);
+}
+
+/* Paused: Sleepy/Line */
+.face-paused .eye {
+    height: 4px;
+    width: 24px;
+    border-radius: 2px;
+}
+
+.mouth {
+    width: 16px;
+    height: 8px;
+    background: #1f2937;
+    border-radius: 0 0 16px 16px;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+.face-focusing .mouth {
+    width: 20px;
+    height: 4px;
+    border-radius: 2px;
+    background: #3730a3;
+}
+
+.face-completed .mouth {
+    width: 32px;
+    height: 16px;
+    border-radius: 0 0 32px 32px;
+    background: #d946ef;
+    /* Pink */
+}
+
+/* Animations */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.face-locked {
+    filter: grayscale(0.2);
+    cursor: not-allowed;
+}
