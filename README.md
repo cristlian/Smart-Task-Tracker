@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://img.icons8.com/emoji/96/teddy-bear-emoji.png" alt="Figurine Focus Logo" width="80"/>
-</p>
-
 <h1 align="center">🧸 Figurine Focus (专注玩偶)</h1>
 
 <p align="center">
