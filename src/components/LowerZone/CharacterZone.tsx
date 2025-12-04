@@ -27,7 +27,7 @@ function XIcon(props: any) {
 }
 
 export const CharacterZone: React.FC = () => {
-    const { timer, costume, setCostume } = useStore();
+    const { timer, costume, setCostume, settings } = useStore();
     const [eyePos, setEyePos] = useState({ x: 0, y: 0 });
     const [isBlinking, setIsBlinking] = useState(false);
     const [isHappy, setIsHappy] = useState(false);
@@ -40,6 +40,7 @@ export const CharacterZone: React.FC = () => {
     const isDragging = useRef(false);
 
     const isLocked = timer.status === 'focusing' || timer.status === 'paused';
+    const isDark = settings.darkMode;
 
     // Eye Tracking
     useEffect(() => {
@@ -160,20 +161,28 @@ export const CharacterZone: React.FC = () => {
     return (
         <div
             ref={containerRef}
-            className="flex-1 bg-gradient-to-b from-white to-indigo-50 rounded-t-[3rem] relative overflow-hidden flex items-center justify-center touch-none select-none"
+            className={cn(
+                "flex-1 rounded-t-[3rem] relative overflow-hidden flex items-center justify-center touch-none select-none transition-colors duration-300",
+                isDark ? "bg-transparent" : "bg-gradient-to-b from-white to-indigo-50"
+            )}
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onPointerMove={handlePointerMove}
             onPointerLeave={handlePointerUp}
         >
-            {/* Background Decor */}
-            <div className="absolute top-10 left-10 w-20 h-20 bg-indigo-200 rounded-full blur-3xl opacity-50" />
-            <div className="absolute bottom-10 right-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl opacity-50" />
+            {/* Background Decor - only show in light mode */}
+            {!isDark && (
+                <>
+                    <div className="absolute top-10 left-10 w-20 h-20 bg-indigo-200 rounded-full blur-3xl opacity-50" />
+                    <div className="absolute bottom-10 right-10 w-32 h-32 bg-pink-200 rounded-full blur-3xl opacity-50" />
+                </>
+            )}
 
             {/* Character */}
             <div
                 className={cn(
-                    "face-container relative w-48 h-48 bg-white rounded-full shadow-xl flex flex-col items-center justify-center transition-transform duration-300",
+                    "face-container relative w-48 h-48 rounded-full shadow-xl flex flex-col items-center justify-center transition-all duration-300",
+                    isDark ? "bg-gray-700 shadow-gray-900/50" : "bg-white",
                     isHappy && "animate-bounce",
                     isLocked && "opacity-80 grayscale-[0.2]"
                 )}
@@ -200,8 +209,8 @@ export const CharacterZone: React.FC = () => {
                     className="flex gap-8 z-10 transition-transform duration-75"
                     style={{ transform: `translate(${eyePos.x}px, ${eyePos.y}px)` }}
                 >
-                    <div className={cn("w-6 h-6 bg-gray-800 rounded-full transition-all", isBlinking && "scale-y-0")} />
-                    <div className={cn("w-6 h-6 bg-gray-800 rounded-full transition-all", isBlinking && "scale-y-0")} />
+                    <div className={cn("w-6 h-6 rounded-full transition-all", isDark ? "bg-gray-300" : "bg-gray-800", isBlinking && "scale-y-0")} />
+                    <div className={cn("w-6 h-6 rounded-full transition-all", isDark ? "bg-gray-300" : "bg-gray-800", isBlinking && "scale-y-0")} />
                 </div>
 
                 {/* Mouth */}
@@ -210,9 +219,9 @@ export const CharacterZone: React.FC = () => {
                     style={{ transform: `translate(${eyePos.x * 0.5}px, ${eyePos.y * 0.5}px)` }}
                 >
                     {isHappy ? (
-                        <div className="w-8 h-4 border-b-4 border-gray-800 rounded-full" />
+                        <div className={cn("w-8 h-4 border-b-4 rounded-full", isDark ? "border-gray-300" : "border-gray-800")} />
                     ) : (
-                        <div className="w-4 h-2 bg-gray-800 rounded-b-full" />
+                        <div className={cn("w-4 h-2 rounded-b-full", isDark ? "bg-gray-300" : "bg-gray-800")} />
                     )}
                 </div>
 
@@ -278,7 +287,10 @@ export const CharacterZone: React.FC = () => {
 
             {/* Locked Indicator */}
             {isLocked && (
-                <div className="absolute bottom-4 text-xs font-bold text-indigo-300 uppercase tracking-widest">
+                <div className={cn(
+                    "absolute bottom-4 text-xs font-bold uppercase tracking-widest",
+                    isDark ? "text-gray-500" : "text-indigo-300"
+                )}>
                     LOCKED
                 </div>
             )}

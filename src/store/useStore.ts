@@ -105,9 +105,32 @@ export const useStore = create<AppState>()(
                 settings: { ...state.settings, modules }
             })),
 
-            updateSettings: (newSettings) => set((state) => ({
-                settings: { ...state.settings, ...newSettings }
-            })),
+            updateSettings: (newSettings) => set((state) => {
+                const updatedSettings = { ...state.settings, ...newSettings };
+                
+                // If focus duration changed and timer is idle in focus mode, update timeLeft
+                let updatedTimer = state.timer;
+                if (newSettings.focusDuration !== undefined && state.timer.status === 'idle' && state.timer.mode === 'focus') {
+                    updatedTimer = {
+                        ...state.timer,
+                        timeLeft: newSettings.focusDuration * 60,
+                        duration: newSettings.focusDuration * 60
+                    };
+                }
+                // If break duration changed and timer is idle in break mode, update timeLeft
+                if (newSettings.breakDuration !== undefined && state.timer.status === 'idle' && state.timer.mode === 'break') {
+                    updatedTimer = {
+                        ...state.timer,
+                        timeLeft: newSettings.breakDuration * 60,
+                        duration: newSettings.breakDuration * 60
+                    };
+                }
+                
+                return {
+                    settings: updatedSettings,
+                    timer: updatedTimer
+                };
+            }),
 
             resetAllData: () => set({
                 tasks: [],

@@ -1,9 +1,11 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { useStore } from '../../store/useStore';
+import { cn } from '../../lib/utils';
 
 export const WeeklyChart: React.FC = () => {
-    const { stats } = useStore();
+    const { stats, settings } = useStore();
+    const isDark = settings.darkMode;
     
     // Generate data for current week (Mon-Sun)
     const current = new Date();
@@ -30,8 +32,11 @@ export const WeeklyChart: React.FC = () => {
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-2 shadow-lg rounded-lg border border-gray-100 text-xs">
-                    <p className="font-bold text-gray-700">{label}</p>
+                <div className={cn(
+                    "p-2 shadow-lg rounded-lg border text-xs",
+                    isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+                )}>
+                    <p className={cn("font-bold", isDark ? "text-gray-200" : "text-gray-700")}>{label}</p>
                     <p className="text-orange-500">{payload[0].value} 分钟</p>
                 </div>
             );
@@ -40,8 +45,11 @@ export const WeeklyChart: React.FC = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-6">本周专注时长</h3>
+        <div className={cn(
+            "p-6 rounded-2xl shadow-sm border mb-6 transition-colors duration-300",
+            isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+        )}>
+            <h3 className={cn("text-lg font-bold mb-6", isDark ? "text-white" : "text-gray-800")}>本周专注时长</h3>
             <div className="h-48 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data} barSize={24}>
@@ -49,13 +57,13 @@ export const WeeklyChart: React.FC = () => {
                             dataKey="name" 
                             axisLine={false} 
                             tickLine={false} 
-                            tick={{ fontSize: 10, fill: '#9ca3af' }} 
+                            tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#9ca3af' }} 
                             dy={10}
                         />
                         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
                         <Bar dataKey="minutes" radius={[4, 4, 4, 4]}>
                             {data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.minutes > 0 ? '#fb923c' : '#e5e7eb'} />
+                                <Cell key={`cell-${index}`} fill={entry.minutes > 0 ? '#fb923c' : (isDark ? '#374151' : '#e5e7eb')} />
                             ))}
                         </Bar>
                     </BarChart>

@@ -2,6 +2,7 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { useStore } from '../../store/useStore';
 import { TaskCategory } from '../../types';
+import { cn } from '../../lib/utils';
 
 const COLORS = {
     study: '#fb923c', // Orange
@@ -18,7 +19,8 @@ const LABELS: Record<TaskCategory, string> = {
 };
 
 export const TaskDistribution: React.FC = () => {
-    const { stats } = useStore();
+    const { stats, settings } = useStore();
+    const isDark = settings.darkMode;
     
     const distribution = stats?.categoryDistribution || { work: 0, study: 0, reading: 0, other: 0 };
 
@@ -33,8 +35,11 @@ export const TaskDistribution: React.FC = () => {
     const displayData = isEmpty ? [{ name: '无数据', value: 1, key: 'other' }] : data;
 
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-6">任务分布</h3>
+        <div className={cn(
+            "p-6 rounded-2xl shadow-sm border mb-6 transition-colors duration-300",
+            isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+        )}>
+            <h3 className={cn("text-lg font-bold mb-6", isDark ? "text-white" : "text-gray-800")}>任务分布</h3>
             <div className="flex items-center">
                 <div className="h-40 w-40 relative shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
@@ -50,7 +55,7 @@ export const TaskDistribution: React.FC = () => {
                                 {displayData.map((entry, index) => (
                                     <Cell 
                                         key={`cell-${index}`} 
-                                        fill={isEmpty ? '#f3f4f6' : COLORS[entry.key as TaskCategory]} 
+                                        fill={isEmpty ? (isDark ? '#374151' : '#f3f4f6') : COLORS[entry.key as TaskCategory]} 
                                     />
                                 ))}
                             </Pie>
@@ -61,7 +66,7 @@ export const TaskDistribution: React.FC = () => {
                 {/* Legend */}
                 <div className="flex-1 pl-6 space-y-3">
                     {isEmpty ? (
-                        <div className="text-gray-400 text-sm">暂无数据</div>
+                        <div className={cn("text-sm", isDark ? "text-gray-500" : "text-gray-400")}>暂无数据</div>
                     ) : (
                         data.map(item => {
                             const total = data.reduce((acc, cur) => acc + cur.value, 0);
@@ -70,9 +75,9 @@ export const TaskDistribution: React.FC = () => {
                                 <div key={item.key} className="flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[item.key as TaskCategory] }} />
-                                        <span className="text-gray-600">{item.name}</span>
+                                        <span className={cn(isDark ? "text-gray-400" : "text-gray-600")}>{item.name}</span>
                                     </div>
-                                    <span className="font-bold text-gray-800">{percent}%</span>
+                                    <span className={cn("font-bold", isDark ? "text-white" : "text-gray-800")}>{percent}%</span>
                                 </div>
                             );
                         })

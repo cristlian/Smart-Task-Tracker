@@ -109,9 +109,42 @@ export const SettingsPage: React.FC = () => {
                     <p className="text-sm text-gray-500 mt-1">个性化您的专注体验</p>
                 </div>
 
+                <Section title="时间设置">
+                    <div className="p-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className={cn("text-sm font-medium", settings.darkMode ? "text-gray-200" : "text-gray-700")}>专注时长</span>
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={() => updateSettings({ focusDuration: Math.max(5, settings.focusDuration - 5) })}
+                                    className={cn("w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-colors", settings.darkMode ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}
+                                >-</button>
+                                <span className={cn("w-16 text-center font-mono text-lg font-bold", settings.darkMode ? "text-white" : "text-gray-800")}>{settings.focusDuration}分钟</span>
+                                <button 
+                                    onClick={() => updateSettings({ focusDuration: Math.min(120, settings.focusDuration + 5) })}
+                                    className={cn("w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-colors", settings.darkMode ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}
+                                >+</button>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className={cn("text-sm font-medium", settings.darkMode ? "text-gray-200" : "text-gray-700")}>休息时长</span>
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={() => updateSettings({ breakDuration: Math.max(1, settings.breakDuration - 1) })}
+                                    className={cn("w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-colors", settings.darkMode ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}
+                                >-</button>
+                                <span className={cn("w-16 text-center font-mono text-lg font-bold", settings.darkMode ? "text-white" : "text-gray-800")}>{settings.breakDuration}分钟</span>
+                                <button 
+                                    onClick={() => updateSettings({ breakDuration: Math.min(30, settings.breakDuration + 1) })}
+                                    className={cn("w-8 h-8 rounded-full flex items-center justify-center text-lg font-bold transition-colors", settings.darkMode ? "bg-gray-700 text-gray-200 hover:bg-gray-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}
+                                >+</button>
+                            </div>
+                        </div>
+                    </div>
+                </Section>
+
                 <Section title="模块设置">
                     <div className="p-4">
-                        <p className="text-xs text-gray-400 mb-3">拖拽调整顺序，点击眼睛图标切换显示</p>
+                        <p className={cn("text-xs mb-3", settings.darkMode ? "text-gray-500" : "text-gray-400")}>拖拽调整顺序，点击眼睛图标切换显示</p>
                         <ModuleSettings />
                     </div>
                 </Section>
@@ -128,7 +161,14 @@ export const SettingsPage: React.FC = () => {
                                 max="100" 
                                 value={settings.soundVolume} 
                                 onChange={(e) => updateSettings({ soundVolume: parseInt(e.target.value) })}
-                                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                onInput={(e) => updateSettings({ soundVolume: parseInt((e.target as HTMLInputElement).value) })}
+                                className={cn(
+                                    "w-full h-2 rounded-lg appearance-none cursor-pointer",
+                                    "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600 [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:active:cursor-grabbing [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white",
+                                    "[&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-indigo-600 [&::-moz-range-thumb]:cursor-grab [&::-moz-range-thumb]:active:cursor-grabbing [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white",
+                                    settings.darkMode ? "bg-gray-700" : "bg-gray-200"
+                                )}
+                                style={{ touchAction: 'none' }}
                             />
                         </div>
                     )}

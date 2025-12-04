@@ -7,7 +7,7 @@ import { GripVertical, Eye, EyeOff } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { STRINGS } from '../../i18n/strings.zh-CN';
 
-function SortableItem({ id, visible, onToggle }: { id: string, visible: boolean, onToggle: () => void }) {
+function SortableItem({ id, visible, onToggle, isDark }: { id: string, visible: boolean, onToggle: () => void, isDark: boolean }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {
@@ -26,14 +26,28 @@ function SortableItem({ id, visible, onToggle }: { id: string, visible: boolean,
     };
 
     return (
-        <div ref={setNodeRef} style={style} className={cn("flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-2 touch-none", isDragging && "shadow-lg bg-white")}>
+        <div 
+            ref={setNodeRef} 
+            style={style} 
+            className={cn(
+                "flex items-center justify-between p-3 rounded-lg mb-2 touch-none transition-colors",
+                isDark 
+                    ? (isDragging ? "shadow-lg bg-gray-700" : "bg-gray-700/50") 
+                    : (isDragging ? "shadow-lg bg-white" : "bg-gray-50")
+            )}
+        >
             <div className="flex items-center gap-3">
-                <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400">
+                <div {...attributes} {...listeners} className={cn("cursor-grab active:cursor-grabbing", isDark ? "text-gray-500" : "text-gray-400")}>
                     <GripVertical size={20} />
                 </div>
-                <span className="text-sm font-medium text-gray-700">{getLabel(id)}</span>
+                <span className={cn("text-sm font-medium", isDark ? "text-gray-200" : "text-gray-700")}>{getLabel(id)}</span>
             </div>
-            <button onClick={onToggle} className={cn("p-2 rounded-full transition-colors", visible ? "text-indigo-600 bg-indigo-50" : "text-gray-400 bg-gray-200")}>
+            <button onClick={onToggle} className={cn(
+                "p-2 rounded-full transition-colors",
+                visible 
+                    ? "text-indigo-600 bg-indigo-50" 
+                    : (isDark ? "text-gray-500 bg-gray-600" : "text-gray-400 bg-gray-200")
+            )}>
                 {visible ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
         </div>
@@ -43,6 +57,7 @@ function SortableItem({ id, visible, onToggle }: { id: string, visible: boolean,
 export const ModuleSettings: React.FC = () => {
     const { settings, updateModuleConfig } = useStore();
     const modules = [...settings.modules].sort((a, b) => a.order - b.order);
+    const isDark = settings.darkMode;
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -73,7 +88,8 @@ export const ModuleSettings: React.FC = () => {
                             key={module.id} 
                             id={module.id} 
                             visible={module.visible} 
-                            onToggle={() => toggleVisibility(module.id)} 
+                            onToggle={() => toggleVisibility(module.id)}
+                            isDark={isDark}
                         />
                     ))}
                 </SortableContext>

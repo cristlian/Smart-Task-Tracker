@@ -1,9 +1,11 @@
 import React from 'react';
 import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useStore } from '../../store/useStore';
+import { cn } from '../../lib/utils';
 
 export const MonthlyChart: React.FC = () => {
-    const { stats } = useStore();
+    const { stats, settings } = useStore();
+    const isDark = settings.darkMode;
     
     // Generate data for last 4 weeks (Week 1 = 3 weeks ago, Week 4 = This week)
     const data = [];
@@ -35,8 +37,11 @@ export const MonthlyChart: React.FC = () => {
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-2 shadow-lg rounded-lg border border-gray-100 text-xs">
-                    <p className="font-bold text-gray-700">{label}</p>
+                <div className={cn(
+                    "p-2 shadow-lg rounded-lg border text-xs",
+                    isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+                )}>
+                    <p className={cn("font-bold", isDark ? "text-gray-200" : "text-gray-700")}>{label}</p>
                     <p className="text-blue-500">{payload[0].value} 分钟</p>
                 </div>
             );
@@ -45,12 +50,15 @@ export const MonthlyChart: React.FC = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-6">月度趋势</h3>
+        <div className={cn(
+            "p-6 rounded-2xl shadow-sm border mb-6 transition-colors duration-300",
+            isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"
+        )}>
+            <h3 className={cn("text-lg font-bold mb-6", isDark ? "text-white" : "text-gray-800")}>月度趋势</h3>
             <div className="h-48 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f3f4f6'} />
                         <XAxis 
                             dataKey="name" 
                             axisLine={false} 
@@ -64,7 +72,7 @@ export const MonthlyChart: React.FC = () => {
                             dataKey="minutes" 
                             stroke="#60a5fa" 
                             strokeWidth={3} 
-                            dot={{ r: 4, fill: '#60a5fa', strokeWidth: 2, stroke: '#fff' }} 
+                            dot={{ r: 4, fill: '#60a5fa', strokeWidth: 2, stroke: isDark ? '#1f2937' : '#fff' }} 
                             activeDot={{ r: 6 }}
                         />
                     </LineChart>
